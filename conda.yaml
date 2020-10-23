@@ -4,5 +4,11 @@ channels:
 dependencies:
   - python=3.7.5
   - pip=20.1
+  - numpy
+  - tesseract
+  - pytesseract
+  - opencv
+  - pyautogui
+  - regex
   - pip:
-    - rpaframework==2.*
+    - rpaframework==5.3.3

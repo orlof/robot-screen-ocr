@@ -1,16 +1,19 @@
-# Name of the Robot
-One line description of what Robot does
+# robot-screen-ocr
+Simple example of on-screen ocr
 
 ## Name of task
+This robot contains a python library ocr.py with two keywords: _Search_ and _Click_.
 
-Description...
+```
+Robot Task
+    ${matches}=  Search  Documentation
+    Click  ${matches[0]}[x]  ${matches[0]}[y]
 
-| Env. Varible | Description |
-| --- | --- |
-| NAME_OF_VARIABLE | Description... |
-
-| Secret |  |
-| --- | --- |
-| NameOfSecret | Description... |
-|  |  |
-
+[
+  {
+    "text": "Documentation",
+    "x": 1100,
+    "y": 300    
+  }
+]
+````
