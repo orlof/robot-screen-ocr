@@ -33,7 +33,7 @@ def search(pattern, distance=0):
     notebook.notebook_image("output/ocr_screen_shot.png")
 
     end = time.time()
-    notebook.notebook_print("%f" % (end-start))
+    notebook.notebook_print("Delay: %f" % (end-start))
 
     return result
 
