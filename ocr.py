@@ -66,10 +66,16 @@ def _screenshot():
 
 
 def _resize(image):
-    d = 4000 / min(image.shape)
+    d = 4000 / min(image.shape[:2])
     if d > 1:
         return cv2.resize(image, None, fx=d, fy=d, interpolation=cv2.INTER_CUBIC)
     return cv2.resize(image, None, fx=d, fy=d, interpolation=cv2.INTER_AREA)
+
+
+def _get_binarization(image):
+    image = _get_grayscale(image)
+    _, img = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
+    return img
 
 
 # get grayscale image
