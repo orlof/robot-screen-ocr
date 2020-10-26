@@ -4,10 +4,12 @@ import pytesseract
 from RPA.core import notebook
 import pyautogui
 import regex
+import time
 
 
 # +
 def search(pattern, distance=0):
+    start = time.time()
     pattern = '(%s){e<=%d}' % (pattern, distance)
     result = []
 
@@ -17,15 +19,21 @@ def search(pattern, distance=0):
 
     for text, conf, x, y, w, h in zip(d['text'], d['conf'], d['left'], d['top'], d['width'], d['height']):
         if int(conf) > 50:
-            if regex.search(pattern, text, flags=regex.IGNORECASE):
-                image = cv2.rectangle(image, (x, y), (x + w, y + h), (50, 50, 255), 2)
-                result.append({
-                    "text": text,
-                    "x": int(dx * (x + w // 2)), "y": int(dy * (y + h // 2))
-                })
+            if len(text) > 0:
+                if regex.search(pattern, text, flags=regex.IGNORECASE):
+                    image = cv2.rectangle(image, (x, y), (x + w, y + h), (50, 50, 255), 2)
+                    result.append({
+                        "text": text,
+                        "x": int(dx * (x + w // 2)), "y": int(dy * (y + h // 2))
+                    })
+                else:
+                    image = cv2.rectangle(image, (x, y), (x + w, y + h), (255, 50, 50), 2)
 
     cv2.imwrite("output/ocr_screen_shot.png", image)
     notebook.notebook_image("output/ocr_screen_shot.png")
+
+    end = time.time()
+    notebook.notebook_print("%f" % (end-start))
 
     return result
 
@@ -44,6 +52,9 @@ def click_text(text):
 def _screenshot():
     image = pyautogui.screenshot()
     image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+
+    # add here image preprocessing
+    # image = _resize(image)
     # image = canny(image)
 
     # dx and dy are needed because screen scaling can make screen resolution 
@@ -52,6 +63,13 @@ def _screenshot():
     dy = pyautogui.size().height / image.shape[0]
 
     return image, dx, dy
+
+
+def _resize(image):
+    d = 4000 / min(image.shape)
+    if d > 1:
+        return cv2.resize(image, None, fx=d, fy=d, interpolation=cv2.INTER_CUBIC)
+    return cv2.resize(image, None, fx=d, fy=d, interpolation=cv2.INTER_AREA)
 
 
 # get grayscale image
